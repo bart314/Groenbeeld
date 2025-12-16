@@ -1,0 +1,36 @@
+stats for vegetation with 2 bins are:
+Border values are: [106. 200.]
+Goodness of absolute deviation of fit is: 0.40520107387533844
+
+stats for vegetation with 3 bins are:
+Border values are: [ 98. 118. 200.]
+Goodness of absolute deviation of fit is: 0.6099052202351528
+
+stats for vegetation with 4 bins are:
+Border values are: [ 98. 117. 132. 200.]
+Goodness of absolute deviation of fit is: 0.6898348192405946
+
+stats for vegetation with 5 bins are:
+Border values are: [ 81. 101. 117. 132. 200.]
+Goodness of absolute deviation of fit is: 0.739485908198847
+
+stats for vegetation with 6 bins are:
+Border values are: [ 81.  98. 113. 117. 132. 200.]
+Goodness of absolute deviation of fit is: 0.764036075235965
+
+stats for vegetation with 7 bins are:
+Border values are: [ 63.  82.  98. 113. 117. 132. 200.]
+Goodness of absolute deviation of fit is: 0.7722645254788737
+
+stats for vegetation with 8 bins are:
+Border values are: [ 63.  81.  93. 104. 113. 117. 132. 200.]
+Goodness of absolute deviation of fit is: 0.7896149743449832
+
+stats for vegetation with 9 bins are:
+Border values are: [ 63.  81.  93. 104. 113. 118. 132. 136. 200.]
+Goodness of absolute deviation of fit is: 0.8142235041722363
+
+stats for vegetation with 10 bins are:
+Border values are: [ 62.  79.  88.  96. 104. 113. 118. 132. 136. 200.]
+Goodness of absolute deviation of fit is: 0.8241511554074532
+
