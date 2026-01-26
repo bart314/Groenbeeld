@@ -5,7 +5,7 @@ Deze repository is voor het eindproject van het Traineeship van YER. In deze rep
 Grotere data bestanden zijn op [google drive](https://drive.google.com/drive/folders/1T0Yv5aPW4eBZI19VUF1yLQH_ZcdhNZrQ?usp=sharing) beschikbaar.
 
 Alle scripts zijn geschreven in python. Voor alle gebruikte python packages kan een Conda omgeving gemaakt worden met het bestand `NDVI-SWF.yaml` in de root van deze repo. 
-Conda kan geinstalleerd worden samen met de suite van [anaconda](https://www.anaconda.com/download) maar ook zelfstanding met de [miniforge](https://conda-forge.org/download/) installer.
+Conda kan geinstalleerd worden samen met de suite van [anaconda](https://www.anaconda.com/download) maar ook zelfstanding met de [miniforge](https://conda-forge.org/download/) installer. Vergeet niet de python versie van de conda omgeving in te stellen als de nieuwe python interpreter voor je IDE indien nodig.
 
 # Pipeline tot noch toe
 Reeds verrichte werkzaamheden zijn hier per script toegelicht:
