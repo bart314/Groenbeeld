@@ -1,5 +1,5 @@
 # NDVI_SWF
-Deze repository is voor het eindproject van het Traineeship van YER. In deze repository is opgeslagen de basis pipeline voor het verkrijgen van de de 2024 NDVI data over het gebied van de gemeente SúdwestFryslân.
+Deze repository is voor het eindproject van het Traineeship van YER. In deze repository is opgeslagen de basis pipeline voor het verkrijgen van de 2024 NDVI data over het gebied van de gemeente SúdwestFryslân.
 
 # Setup
 Grotere data bestanden zijn op [google drive](https://drive.google.com/drive/folders/1T0Yv5aPW4eBZI19VUF1yLQH_ZcdhNZrQ?usp=sharing) beschikbaar.
