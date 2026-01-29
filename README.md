@@ -30,4 +30,4 @@ Reeds verrichte werkzaamheden zijn hier per script toegelicht:
 ### Python for Geographic Data Analysis
 De online module [Python for Geographic Data Analysis](https://pythongis.org/index.html) geeft een introductie van hoe geo-data in python verwerkt kan worden. Specifiek deel 2 kan waardevol zijn. Deel 1 geeft een algemene introdctie aan python waar de meesten toch wel bekend mee zijn. Deel 3 lijkt op het moment van schrijven nog niet helemaal af te zijn.
 ### tutorial grondwaterstand
-In de map tutorial grondwaterstand staat een jupyter notebook `Grondwaterstand python tutorial V4.ipynb` hierin wordt met extra detail een wat simpelere casus in zijn voledigheid behandeld.
+In de map Tutorial_grondwaterstand staat een jupyter notebook `Grondwaterstand python tutorial V4.ipynb` hierin wordt met extra detail een wat simpelere casus in zijn voledigheid behandeld.
