@@ -4,7 +4,7 @@
 In deze repository staan de python scripts voor de concept pipeline die de gemeente Súdwest-Fryslân gebruikt voor het ophalen en verder verwerken van vegtatie data (NDVI). Het doel van de verwerking van deze data is dat het resultaat uiteindelijk opgenomen kan worden in de klimaat monitor van de [gebiedsmonitor](https://sudwestfryslan.gebiedsmonitor.nl/) van de gemeente. De gebiedsmonitor is een groter overkoepelend project van de gemeente wat op het moment in actieve ontwikkeling is. Het doel van de gebiedsmonitor is om relevante data in een visuele en toegankelijke manier aan collega's en inwoners te verschaffen. Dit kan dan gebruikt worden ter informatie en in toekomstige besluitvorming. 
 
 ## Samenwerking
-De direct aanleiding voor deze repositoy is het beschikbaar stellen van de scripts en data van dit project als zijnde bijlage voor de casus voor het eindproject van het Traineeship van YER (lichting 2024). Bij interesse in samenwerking bij dit project, of voor vragen, kan contact opgenomen worden met het team [AI & security](s.hendriks2@sudwestfryslan.nl) van de gemeente Súdwest-Fryslân.
+De direct aanleiding voor deze repositoy is het beschikbaar stellen van de scripts en data van dit project als zijnde bijlage voor de casus voor het eindproject van het Traineeship van YER (lichting 2024). Bij interesse in samenwerking bij dit project, of voor vragen, kan contact opgenomen worden met het team [AI & security](mailto:s.hendriks2@sudwestfryslan.nl) van de gemeente Súdwest-Fryslân.
 
 ## Setup
 Grotere data bestanden zijn op [google drive](https://drive.google.com/drive/folders/1T0Yv5aPW4eBZI19VUF1yLQH_ZcdhNZrQ?usp=sharing) beschikbaar.
