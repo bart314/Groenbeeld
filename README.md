@@ -1,4 +1,4 @@
-# NDVI_SWF
+# Groenbeeld Súdwest‑Fryslân
 
 ## Introductie
 In deze repository staan de python scripts voor de concept pipeline die de gemeente Súdwest-Fryslân gebruikt voor het ophalen en verder verwerken van vegtatie data (NDVI). Het doel van de verwerking van deze data is dat het resultaat uiteindelijk opgenomen kan worden in de klimaatmonitor van de [gebiedsmonitor](https://sudwestfryslan.gebiedsmonitor.nl/) van de gemeente. De gebiedsmonitor is een groter overkoepelend project van de gemeente wat op het moment in actieve ontwikkeling is. Het doel van de gebiedsmonitor is om relevante data in een visuele en toegankelijke manier aan collega's en inwoners te verschaffen. Dit kan dan gebruikt worden ter informatie en in toekomstige besluitvorming. 
