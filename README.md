@@ -1,7 +1,19 @@
 # Groenbeeld Súdwest‑Fryslân
 
 ## Introductie
-In deze repository staan de python scripts voor de concept pipeline die de gemeente Súdwest-Fryslân gebruikt voor het ophalen en verder verwerken van vegtatie data (NDVI). Het doel van de verwerking van deze data is dat het resultaat uiteindelijk opgenomen kan worden in de klimaatmonitor van de [gebiedsmonitor](https://sudwestfryslan.gebiedsmonitor.nl/) van de gemeente. De gebiedsmonitor is een groter overkoepelend project van de gemeente wat op het moment in actieve ontwikkeling is. Het doel van de gebiedsmonitor is om relevante data in een visuele en toegankelijke manier aan collega's en inwoners te verschaffen. Dit kan dan gebruikt worden ter informatie en in toekomstige besluitvorming. 
+In deze repository staan de scripts die de kaart voor het groenbeeld van de gemeente Súdwest Fryslân maken. Het doel hiervan is het aan kunnen bieden van extra kaarten in de [gebiedsmonitor](https://sudwestfryslan.gebiedsmonitor.nl/) van de gemeente. De gebiedsmonitor is een groter overkoepelend project van de gemeente wat op het moment in actieve ontwikkeling is. Het doel van de gebiedsmonitor is om meer kaarten, met verschillende soorten interessante informatie, op toegankelijke manier aan collega's en inwoners te verschaffen. Dit kan dan gebruikt worden ter informatie en in toekomstige besluitvorming.
+
+## Wat staat er in de kaart?
+In deze kaar is er over het hele gebied van de gemeente Súdwest Fryslân de "Normalized Difference Vegetation Index" (NDVI) berekend.
+Dit is een waarde die per meetpunt aangeeft of er vegetatie op dat punt aanwezig is, en zoja, hoe gezond die vegetatie zou zijn. Elk meetpunt betreft een gebied van 25 bij 25cm. Deze kaart kan hierdoor gebruikt worden om te kijken hoeveel groen er in de gemeente is, en op welke plekken. Maar dus ook op welke plekken het nog beter kan, en dus aagepakt zouden kunnen worden met het voeren van klimaatbeleid.
+
+## Wat staat er in deze repository?
+In deze repository staan een aantal opeenvolgende scripts die de nodige data ophalen en verder verwerken voor onze doeleinden.
+Globaal worden de volgende handelingen vericht:
+* Het ophalen van de benodigde infrarood luchfoto data van [PDOK]((https://www.pdok.nl/introductie/-/article/pdok-luchtfoto-infrarood-open-)).
+* Omrekenen van kleurwaardes van de luchtfoto naar NDVI waardes.
+* Selecteren van een specifiek gebied voor de kaart. Hier dus het grondgebied van de gemeente Súdwest Fryslân.
+* Analyseert de verschillende waardes in NDVI over het gebied zodat logische groepeeringen gekozen kunen worden. Bijvoorbeeld: "geen vegetatie", "Zwakke vegetatie" en "Gezonde vegetatie".
 
 ## Samenwerking
 De direct aanleiding voor het maken van deze repositoy is het beschikbaar stellen van de scripts en data van dit project als zijnde bijlage voor de casus voor het eindproject van het Traineeship van YER (lichting 2024). Bij interesse in samenwerking bij dit project, of voor vragen, kan contact opgenomen worden met het team [AI & security](mailto:s.hendriks2@sudwestfryslan.nl) van de gemeente Súdwest-Fryslân.
@@ -12,8 +24,8 @@ Grotere data bestanden zijn op [google drive](https://drive.google.com/drive/fol
 Alle scripts zijn geschreven in python. Voor alle gebruikte python packages kan een Conda omgeving gemaakt worden met het bestand `NDVI-SWF.yaml` in de root van deze repo. 
 Conda kan geinstalleerd worden samen met de suite van [anaconda](https://www.anaconda.com/download) maar ook zelfstanding met de [miniforge](https://conda-forge.org/download/) installer. Vergeet niet de python versie van de conda omgeving in te stellen als de nieuwe python interpreter voor je IDE indien nodig.
 
-## Pipeline tot noch toe
-Reeds verrichte werkzaamheden zijn hier per script toegelicht:
+## Werkzaamheden per script uitgebreid uitgewerkt
+Reeds verrichte werkzaamheden zijn hier in volgorde per script toegelicht:
 ### Essentiele scripts / scripts voor ophalen basis dataset
 * `WMTS_Explore_V1.py`: Dit script benaderd de web map tile service (WMTS) van de bron [PDOK](https://www.pdok.nl/introductie/-/article/pdok-luchtfoto-infrarood-open-) en leest uit, naar de python interpreter, de randvoorwaarden die nodig zijn voor het ophalen van de data.
 * `NDVI_Retriever_V2.py`: Dit script haalt de data van de bron op, en berrekend die om naar de NDVI waardes. Alle randvoorwaarden zijn hardcoded in het script, in de toekomst zou dit een config.txt file mogen zijn. De dataset die het script op het moment op zou halen zijn de meetwaardes van 2024. Het resultaat van dit script is een laag raster data met de berrekende NDVI als meetwaardes. Deze meetwaardes zijn getransformeerd naar het datatype uint8 met als bereik 0-200 met 255 als de 'nodata' waarde. Dit resultaat wordt opgeslagen als een geotiff met .tiff of .tif als extensie.
