@@ -14,6 +14,7 @@ Globaal worden de volgende handelingen vericht:
 * Omrekenen van kleurwaardes van de luchtfoto naar NDVI waardes.
 * Selecteren van een specifiek gebied voor de kaart. Hier dus het grondgebied van de gemeente Súdwest Fryslân.
 * Analyseert de verschillende waardes in NDVI over het gebied zodat logische groepeeringen gekozen kunen worden. Bijvoorbeeld: "geen vegetatie", "Zwakke vegetatie" en "Gezonde vegetatie".
+Op het moment verwerken deze scripts alleen nog de data van 2024 als proof of concept. Op een verder punt van dit project kunnen de scripts makkelijk aangepast worden om van anderen en of meerdere jaren de data op te halen en te verwerken. 
 
 ## Samenwerking
 De direct aanleiding voor het maken van deze repositoy is het beschikbaar stellen van de scripts en data van dit project als zijnde bijlage voor de casus voor het eindproject van het Traineeship van YER (lichting 2024). Bij interesse in samenwerking bij dit project, of voor vragen, kan contact opgenomen worden met het team [AI & security](mailto:s.hendriks2@sudwestfryslan.nl) van de gemeente Súdwest-Fryslân.
