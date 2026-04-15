@@ -782,7 +782,8 @@ if __name__ == "__main__":
     # The name will be used for the final filename
     filename = f"ndvi_{name}_new.tiff"
     # Next is the bounding box of the request
-    bbox_request = (140032.13, 534299.47, 181862.694, 574122.007)
+    #bbox_request = (140032.13, 534299.47, 181862.694, 574122.007)
+    bbox_request = (162995.2992, 563126.3802, 165494.1228, 565237.1188)
     # Next is the chunksize that will be encoded in the resulting geotiff.
     # The set value of this may be user preference.
     chunksize = 256

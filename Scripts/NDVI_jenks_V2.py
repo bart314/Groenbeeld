@@ -21,7 +21,7 @@ import mapclassify as mc
 if __name__ == "__main__":
     # Set the filepath.
     cwd = Path.cwd()
-    infile = Path(cwd / "outdir/ndvi_swf_clipped_geen_IJsselmeer.tiff")
+    infile = Path(cwd / "outdir/buurt_samples/BU19000002_ndvi.tif")
     # Read reference to file.
     geo_arr = riox.open_rasterio(infile, mode="r", chunks="auto", masked=False)
     geo_arr = geo_arr.squeeze("band", drop=True)
@@ -44,13 +44,13 @@ if __name__ == "__main__":
     # This approach slightly skews the ratio in favor of values with few measurements.
     # This is no issue as long as the sample size is significantly larger than the amount of
     # possible values.
-    values = np.arange(0, 201, 1)
+    values = np.arange(0, len(counts), 1)
     # Write the sample/approximation to a .npy file.
     jenks = np.repeat(values, approximation).astype(int)
     np.save(Path(cwd / "outdir/Jenks_counts.npy"), counts)
     # Calculates "ideal" bin division for the amount of bins in the range of 2-10 using the Fisher-Jenks algorithm.
     # Results are safed to a .txt file.
-    with open(Path(cwd / "outdir/Jenks_stat.txt"), "w") as stats:
+    with open(Path(cwd / "outdir/Jenks_stat_2.txt"), "w") as stats:
         for k in range(2, 11, 1):
             result = mc.FisherJenks(jenks, k)
 
