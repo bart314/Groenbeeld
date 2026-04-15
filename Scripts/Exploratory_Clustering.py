@@ -197,8 +197,36 @@ def process_neighborhood(indir, target_name, outdir):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Exploratory Clustering for GeoTIFFs")
     parser.add_argument("--indir", type=str, default="outdir/municipality_survey", help="Input directory")
-    parser.add_argument("--target", type=str, required=True, help="Neighborhood name/code target")
+    parser.add_argument("--target", type=str, help="Neighborhood name/code target")
+    parser.add_argument("--file", type=str, default="targets.txt", help="Path to a text file containing neighborhood targets")
     parser.add_argument("--outdir", type=str, default="outdir/exploratory_analysis", help="Output directory")
     
     args = parser.parse_args()
-    process_neighborhood(args.indir, args.target, args.outdir)
+    
+    targets = []
+    if args.target:
+        targets.append(args.target)
+    
+    if args.file:
+        file_path = Path(args.file)
+        if file_path.exists():
+            with open(file_path, 'r') as f:
+                new_targets = [line.strip() for line in f if line.strip()]
+                targets.extend(new_targets)
+            # Remove duplicates while preserving order
+            targets = list(dict.fromkeys(targets))
+            print(f"Loaded {len(new_targets)} targets from {args.file}")
+        elif args.file != "targets.txt":
+            print(f"Error: File {args.file} not found.")
+            exit(1)
+            
+    if not targets:
+        print("Error: No targets provided. Use --target or create a targets.txt file.")
+        parser.print_help()
+        exit(1)
+        
+    for target in targets:
+        print(f"\n{'='*40}")
+        print(f"Processing Target: {target}")
+        print(f"{'='*40}")
+        process_neighborhood(args.indir, target, args.outdir)

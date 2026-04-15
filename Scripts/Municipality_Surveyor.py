@@ -392,7 +392,7 @@ if __name__ == "__main__":
     parser.add_argument("--overwrite", action="store_true", help="Overwrite existing files")
     parser.add_argument("--outdir", type=str, default="outdir/municipality_survey", help="Output directory")
     parser.add_argument("--buurten", nargs="+", help="Specific neighborhood codes or names to process")
-    parser.add_argument("--file", type=str, help="Path to a text file containing neighborhood codes or names (one per line)")
+    parser.add_argument("--file", type=str, default="targets.txt", help="Path to a text file containing neighborhood codes or names (one per line)")
     parser.add_argument("--no-height", action="store_false", dest="height", help="Disable height data retrieval")
     parser.set_defaults(height=True)
     
@@ -406,8 +406,10 @@ if __name__ == "__main__":
         if file_path.exists():
             with open(file_path, 'r') as f:
                 targets.extend([line.strip() for line in f if line.strip()])
-        else:
+            print(f"Loaded {len(targets)} targets from {args.file}")
+        elif args.file != "targets.txt":
             print(f"Error: File {args.file} not found.")
+            exit(1)
 
     start_time = time.time()
     surveyor = MunicipalitySurveyor(args.outdir, overwrite=args.overwrite)
