@@ -45,7 +45,7 @@ CIR_DATASET_ID = "2024_ortho25IR"
 RGB_DATASET_ID = "2024_ortho25"
 BRT_A_DATASET_ID = "standaard"
 BGT_DATASET_ID = "standaardvisualisatie"
-KEA_DATASET_ID = "gevoelstemperatuur_2022"
+KEA_DATASET_IDS = ["gevoelstemperatuur_2022", "RMK_BKB_AHN4", "RMK_SchaduwGrijs_AHN4", "RMK_SchaduwGroen_AHN4", "BGV_ONO_2024", "BGV_landbedekking_2024", "RMK_30percBKB_AHN4"] 
 ZOOM = "14"
 CRS_EPSG = "EPSG:28992"
 
@@ -167,19 +167,19 @@ class MunicipalitySurveyor:
     
     def initialize_wms(self):
         print("Initializing KEA WMS service...")
-        print(f"Connecting to Sogelink Server for {KEA_DATASET_ID}...")
+        print(f"Connecting to Sogelink Server for {KEA_DATASET_IDS}...")
         try:
             # Sogelink works well with version 1.3.0
             self.kea_client = WebMapService(KEA_WMS_URL, version='1.3.0', timeout=60)
             
             if self.kea_client and hasattr(self.kea_client, 'contents'):
-                if KEA_DATASET_ID in self.kea_client.contents:
-                    print(f" SUCCESS: Connected. Layer '{KEA_DATASET_ID}' found.")
+                for layer_id in KEA_DATASET_IDS:
+                    if layer_id in self.kea_client.contents:
+                        print(f" SUCCESS: Layer '{layer_id}' found.")
+                    else:
+                        print(f" Warning: Layer '{layer_id}' not found.")
                 else:
-                    # If it fails, this will show you the actual internal names
-                    print(f" Warning: {KEA_DATASET_ID} not found. Available: {list(self.kea_client.contents.keys())[:5]}")
-            else:
-                print(" ERROR: Could not retrieve capabilities from Sogelink.")
+                    print(" ERROR: Could not retrieve capabilities.")
         except Exception as e:
             print(f" CONNECTION FAILED: {e}")
             self.kea_client = None
@@ -324,10 +324,10 @@ class MunicipalitySurveyor:
     
     def download_wms_data(self, bbox, width, height, layer):
         if not self.kea_client:
-            return np.zeros((height, width, 3), dtype=np.uint8)
+            return np.zeros((height, width, 4), dtype=np.uint8)
 
         # Create an empty canvas for the full neighborhood
-        full_map = np.zeros((height, width, 3), dtype=np.uint8)
+        full_map = np.zeros((height, width, 4), dtype=np.uint8)
         
         # Split into a 2x2 grid (4 chunks) to bypass server memory limits
         rows, cols = 2, 2
@@ -360,7 +360,7 @@ class MunicipalitySurveyor:
                         transparent=True
                     )
                     
-                    img = Image.open(BytesIO(response.read())).convert('RGB')
+                    img = Image.open(BytesIO(response.read())).convert('RGBA')
                     img_arr = np.array(img.resize((chunk_w, chunk_h)))
                     
                     # Place chunk into the full canvas
@@ -424,7 +424,7 @@ class MunicipalitySurveyor:
             output_brt = self.outdir / f"{base_filename}_BRT.tif"
             output_brta = self.outdir / f"{base_filename}_BRTA.tif"
             output_bgt = self.outdir / f"{base_filename}_BGT.tif"
-            output_kea = self.outdir / f"{base_filename}_KEA.tif"
+            #output_kea = self.outdir / f"{base_filename}_KEA.tif"
             
             # Check if all targeted files exist
             targets_exist = output_cir.exists() and output_rgb.exists() and output_ndvi.exists()
@@ -450,11 +450,6 @@ class MunicipalitySurveyor:
                 asyncio.set_event_loop(loop)
                 cir_data, rgb_data, brt_data, brta_data, bgt_data = loop.run_until_complete(self.download_area(x_range, y_range))
                 loop.close()
-                
-                # KEA data
-                print("  Downloading KEA WMS data...")
-                h, w = cir_data.shape[0], cir_data.shape[1]
-                kea_data = self.download_wms_data(bbox_tiles, w, h, KEA_DATASET_ID)
 
                 # NDVI Calc
                 print("  Calculating NDVI...")
@@ -511,14 +506,39 @@ class MunicipalitySurveyor:
 
                 with rio.open(output_bgt, 'w', count=3, dtype=np.uint8, **map_meta) as dst:
                     for b in range(3): dst.write(bgt_data[:, :, b], b + 1)
-
-                # Use compatible metadata
+                """
+                # Save KEA metadata
                 kea_meta = common_meta.copy()
                 kea_meta.update({'nodata': None, 'photometric': 'rgb', 'interleave': 'pixel'})
                 
                 with rio.open(output_kea, 'w', count=3, dtype=np.uint8, **kea_meta) as dst:
                     for b in range(3): dst.write(kea_data[:, :, b], b + 1)
+                """
+                
+                # KEA data
+                # KEA data - Download and save each layer separately
+                print(f"  Downloading {len(KEA_DATASET_IDS)} KEA WMS layers...")
+                h, w = cir_data.shape[0], cir_data.shape[1]
+                
+                kea_meta = common_meta.copy()
+                kea_meta.update({'count':4, 'nodata': None, 'interleave': 'pixel'})
 
+                for layer_id in KEA_DATASET_IDS:
+                    # 1. Download the specific layer
+                    kea_data = self.download_wms_data(bbox_tiles, w, h, layer_id)
+                    
+                    # 2. Define a unique filename for this layer
+                    output_kea_layer = self.outdir / f"{base_filename}_KEA_{layer_id}.tif"
+                    
+                    # 3. Save it
+                    with rio.open(output_kea_layer, 'w', dtype=np.uint8, **kea_meta) as dst:
+                        for b in range(4): 
+                            dst.write(kea_data[:, :, b], b + 1)
+                    
+                    print(f"    Saved KEA layer: {layer_id}")
+                    del kea_data # Clean up memory for each layer
+
+                
                 # Save NDVI
                 with rio.open(output_ndvi, 'w', count=1, dtype=np.uint8, **common_meta) as dst:
                     dst.write(ndvi_uint8, 1)
@@ -566,7 +586,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Surveyor for Súdwest-Fryslân Infrared Imagery")
     parser.add_argument("--limit", type=int, default=2, help="Limit the number of neighborhoods (default: 2 for testing)")
     parser.add_argument("--overwrite", action="store_true", help="Overwrite existing files")
-    parser.add_argument("--outdir", type=str, default="outdir/municipality_survey", help="Output directory")
+    parser.add_argument("--outdir", type=str, default="outdir/municipality_survey_V2", help="Output directory")
     parser.add_argument("--buurten", nargs="+", help="Specific neighborhood codes or names to process")
     parser.add_argument("--file", type=str, default="targets.txt", help="Path to a text file containing neighborhood codes or names (one per line)")
     parser.add_argument("--no-height", action="store_false", dest="height", help="Disable height data retrieval")
