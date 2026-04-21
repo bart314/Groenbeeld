@@ -14,8 +14,13 @@ import rasterio as rio
 from sklearn.cluster import MiniBatchKMeans
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import normalize
 import matplotlib.pyplot as plt
 import pandas as pd
+import xml.etree.ElementTree as ET
+from matplotlib.colors import ListedColormap
+from pathlib import Path
+
 
 def find_knee(x, y):
     """Simple heuristic to find the 'knee' in an elbow curve."""
@@ -32,7 +37,7 @@ def find_knee(x, y):
 
     return x[np.argmax(distances)]
 
-def process_neighborhood(indir, target_name, outdir):
+def process_neighborhood(indir, target_name, outdir, kmeans_type='standard'):
     outdir = Path(outdir)
     outdir.mkdir(parents=True, exist_ok=True)
 
@@ -86,14 +91,21 @@ def process_neighborhood(indir, target_name, outdir):
     scaler = StandardScaler()
     features_scaled = scaler.fit_transform(features)
 
+    if kmeans_type == 'cosine':
+        print("Normalizing features for cosine distance effect...")
+        features_normalized = normalize(features_scaled, norm='l2', axis=1)
+    elif kmeans_type == 'standard':
+        print("Running standard Kmeans")
+        features_normalized = features_scaled
+
     # Sampling for K-estimation
-    sample_size = min(len(features_scaled), 200000)
-    indices = np.random.choice(len(features_scaled), sample_size, replace=False)
-    sample = features_scaled[indices]
+    sample_size = min(len(features_normalized), 200000)
+    indices = np.random.choice(len(features_normalized), sample_size, replace=False)
+    sample = features_normalized[indices]
 
     # Elbow Method
     print("Estimating optimal K (Elbow method)...")
-    ks = range(3, 13)
+    ks = range(3, 12)
     inertias = []
     for k in ks:
         kmeans = MiniBatchKMeans(n_clusters=k, random_state=42, batch_size=1024)
@@ -118,7 +130,7 @@ def process_neighborhood(indir, target_name, outdir):
     # Final Clustering
     print(f"Running final clustering with K={optimal_k}...")
     kmeans_final = MiniBatchKMeans(n_clusters=optimal_k, random_state=42, batch_size=2048)
-    labels_valid = kmeans_final.fit_predict(features_scaled)
+    labels_valid = kmeans_final.fit_predict(features_normalized)
 
     # Map labels back to full image
     full_labels = np.full(ndvi.shape, 255, dtype=np.uint8)
@@ -189,16 +201,34 @@ def process_neighborhood(indir, target_name, outdir):
     stats_csv = outdir / f"{target_name}_cluster_stats.csv"
     stats_df.to_csv(stats_csv, index=False)
 
+    # Retrieve colorcoding from .qml file for PCA plot
+    qml_path = outdir / f"{target_name}_clusters.qml"
+    pca_qml_colors = []
+    if qml_path.exists():
+        try:
+            tree = ET.parse(qml_path)
+            root = tree.getroot()
+            for entry in root.findall('.//paletteEntry'):
+                pca_qml_colors.append(entry.get('color'))
+        except ET.ParseError as e:
+            print(f"Error parsing QML file {qml_path} for PCA colors: {e}")
+            pca_qml_colors = []
+
+    if pca_qml_colors and len(pca_qml_colors) == optimal_k:
+        pca_cmap = ListedColormap(pca_qml_colors)
+    else:
+        pca_cmap = plt.get_cmap('tab10', optimal_k)
+
     # PCA check (sample size 250k)
     max_samples = 250000  # 200k–300k is sweet spot
 
-    n_total = len(features_scaled)
+    n_total = len(features_normalized)
     if n_total > max_samples:
         sample_idx = np.random.choice(n_total, max_samples, replace=False)
     else:
         sample_idx = np.arange(n_total)
 
-    features_sample = features_scaled[sample_idx]
+    features_sample = features_normalized[sample_idx]
     labels_sample = labels_valid[sample_idx]
 
     print(f"PCA sample size: {len(features_sample)} / {n_total}")
@@ -215,18 +245,22 @@ def process_neighborhood(indir, target_name, outdir):
         features_pca[:, 0],
         features_pca[:, 1],
         c=labels_sample,
-        cmap='tab10',
+        cmap=pca_cmap, 
         s=2,
         alpha=0.6
-    )
+      )
 
     plt.title(f'PCA of Clusters for {target_name} (sampled, K={optimal_k})')
     plt.xlabel('Principal Component 1')
     plt.ylabel('Principal Component 2')
     plt.grid(True)
 
-    #cbar = plt.colorbar(scatter)
-    #cbar.set_label("Cluster ID")
+    cbar_ticks = np.arange(optimal_k) # Ticks voor elke cluster ID
+    cbar_labels = [f'Cluster {i}' for i in range(optimal_k)] # Labels voor elke cluster
+
+    cbar = plt.colorbar(scatter, ticks=cbar_ticks) # Creëer colorbar met de scatter plot en custom ticks
+    cbar.ax.set_yticklabels(cbar_labels) # Stel custom labels in
+    cbar.set_label("Cluster ID") # Stel het algemene label in voor de colorbar
 
     pca_plot_path = outdir / f"{target_name}_pca_clusters.png"
     plt.savefig(pca_plot_path, dpi=300, bbox_inches='tight')
@@ -245,6 +279,7 @@ if __name__ == "__main__":
     parser.add_argument("--target", type=str, help="Neighborhood name/code target")
     parser.add_argument("--file", type=str, default="targets.txt", help="Path to a text file containing neighborhood targets")
     parser.add_argument("--outdir", type=str, default="outdir/exploratory_analysis", help="Output directory")
+    parser.add_argument("--kmeans_type", type=str, default='standard', help="K-means type to run")
 
     args = parser.parse_args()
 
@@ -274,4 +309,4 @@ if __name__ == "__main__":
         print(f"\n{'='*40}")
         print(f"Processing Target: {target}")
         print(f"{'='*40}")
-        process_neighborhood(args.indir, target, args.outdir)
+        process_neighborhood(args.indir, target, args.outdir, kmeans_type=args.kmeans_type)
