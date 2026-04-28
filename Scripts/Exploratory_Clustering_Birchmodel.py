@@ -215,8 +215,8 @@ if __name__ == "__main__":
     parser.add_argument("--outdir", type=str, default="outdir/exploratory_analysis", help="Base output directory for clustering results")
     parser.add_argument("--output_sub_dir", type=str, default="birch_results", help="Subdirectory within the base output directory for Birch results")
     parser.add_argument("--subset_size", type=int, default=2000000, help="Number of samples to use for Birch training")
-    parser.add_argument("--threshold", type=float, default=1.7, help="Birch clustering feature threshold")
-    parser.add_argument("--branching_factor", type=int, default=100, help="Birch clustering branching factor")
+    parser.add_argument("--threshold", type=float, default=1.8, help="Birch clustering feature threshold")
+    parser.add_argument("--branching_factor", type=int, default=50, help="Birch clustering branching factor")
     parser.add_argument("--n_clusters", type=int, default=None, help="Number of clusters. If None, the number of clusters is determined by the Birch algorithm's internal thresholding.")
 
     args = parser.parse_args()
